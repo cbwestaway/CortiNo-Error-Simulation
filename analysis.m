@@ -1,30 +1,29 @@
 clc;
 close all;
 
-% define timespan in days
+% timespan in days
 N = 100;
+%{
+    coefficient of variation (CV = SD/mean)
+    - Ideally our CV is less than 10% for 
+      all values in the measurement range
+%} 
+cv = 0.1;
 % get day-to-day cortisol data for N days
 days = 1:N;
 true_cort = gen_cort_readings(N);
+% calculate an approximation of the standard deviation at each point
+err = true_cort .* cv;
 
-
-% visualize
+% Plot the true values with error bars representing the standard deviation
 figure;
-% upper bound for accuracy
-upper = true_cort + 0.47;
-plot(days, upper, 'DisplayName', 'Soma Error UB');
-% true levels
-hold on;
-plot(days, true_cort, 'DisplayName', 'True Value');
-% lower bound for accuracy
-hold on;
-lower = true_cort - 0.47;
-plot(days, lower, 'DisplayName', 'Soma Error LB');
+errorbar(days, true_cort, err, 'DisplayName', 'Cort. Values w/ Error');
 
 % fit the data to a normal distribution to calculate the z-score
+% this is likely similar to how we would do it in the app
 [mu, sig] = normfit(true_cort);
 % calculate the high and low cut offs
-zth = 1.036;
+zth = 1.036; % 15%-85% threshold
 high = ones(1, N) .* (zth * sig) + mu;
 low = ones(1, N) .* (-zth * sig) + mu;
 % plot the cut offs
