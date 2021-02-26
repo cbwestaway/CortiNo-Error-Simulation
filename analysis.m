@@ -5,14 +5,16 @@ close all;
 N = 100;
 %{
     coefficient of variation (CV = SD/mean)
-    - Ideally our CV is less than 10% for 
+    - Ideally our CV is less than 15% for 
       all values in the measurement range
+    - Note: If possible we should aim for a 
+      CV of 10% as it looks significantly better
 %} 
-cv = 0.1;
+cv = 0.15;
 % get day-to-day cortisol data for N days
 days = 1:N;
 true_cort = gen_cort_readings(N);
-% calculate an approximation of the standard deviation at each point
+% approximation of 1 standard deviation at each point
 err = true_cort .* cv;
 
 % Plot the true values with error bars representing the standard deviation
